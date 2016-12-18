@@ -1,4 +1,5 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var gain = 0.30;
 
 var NOTES = {
     C1: 32.70,
@@ -92,13 +93,13 @@ class Note {
     }
 
     start(t) {
-        this.gainNode.gain.value = 0.15;
+        this.gainNode.gain.value = gain;
         this.osc.start(audioCtx.currentTime + t);
     }
     stop(t) {
         this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, audioCtx.currentTime + t);
-        this.gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.03);
-        this.osc.stop(audioCtx.currentTime + t + 0.04);
+        this.gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.5);
+        this.osc.stop(audioCtx.currentTime + t + 0.51);
         delete this;
     }
 }
