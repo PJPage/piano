@@ -1,7 +1,8 @@
+
 //todo: don't activate white key if black key pressed
 var canvas;
 var ctx;
-var keyWidth = 40;
+var keyWidth;
 var keys = [];
 var notes = [];
 var naturals = [
@@ -33,13 +34,38 @@ var sharps = [
     NOTES.As4
 ];
 
+function setCanvasSize() {
+    canvas.width = window.innerWidth;
+    if (window.innerHeight < window.innerWidth / 4) {
+        canvas.height = window.innerHeight;
+    } else {
+        canvas.height = window.innerWidth / 4;
+    }
+    keyWidth = canvas.width / 14;
+    drawPiano();
+}
 window.onload = function() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-    canvas.width = 560;
-    canvas.height = 200;
+    setCanvasSize();
     
-    drawPiano();
+    canvas.addEventListener('touchstart', function(e) {
+        var pos = getMousePos(e);
+        for (var i = 0; i < e.touches.length; i++) {
+            var touch = e.touches[i];
+            var mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            })
+            canvas.dispatchEvent(mouseEvent);
+        }
+    });
+    canvas.addEventListener('touchend', function(e) {
+        for (var i = 0; i < e.touches.length; i++) {
+            var mouseEvent = new MouseEvent('mouseup');
+            canvas.dispatchEvent(mouseEvent);
+        }
+    });
 
     canvas.addEventListener('mousedown', function(e) {
 
@@ -62,6 +88,7 @@ window.onload = function() {
             notes[i].stop();
         }
     });
+    window.addEventListener('resize', setCanvasSize, false);
 }
 function getMousePos(e) {
     var rect = canvas.getBoundingClientRect();
@@ -71,6 +98,7 @@ function getMousePos(e) {
 
 }
 function drawPiano() {
+    keys = [];
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -147,4 +175,5 @@ class Key {
     }
 
 }
+
 
