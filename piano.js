@@ -1,4 +1,3 @@
-
 //todo: don't activate white key if black key pressed
 var canvas;
 var ctx;
@@ -51,20 +50,16 @@ window.onload = function() {
     
     canvas.addEventListener('touchstart', function(e) {
         var pos = getMousePos(e);
-        for (var i = 0; i < e.touches.length; i++) {
-            var touch = e.touches[i];
-            var mouseEvent = new MouseEvent('mousedown', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-            })
-            canvas.dispatchEvent(mouseEvent);
-        }
+        var touch = e.touches[e.touches.length - 1];
+        var mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
     });
     canvas.addEventListener('touchend', function(e) {
-        for (var i = 0; i < e.touches.length; i++) {
-            var mouseEvent = new MouseEvent('mouseup');
+            var mouseEvent = new MouseEvent('mouseup', {});
             canvas.dispatchEvent(mouseEvent);
-        }
     });
 
     canvas.addEventListener('mousedown', function(e) {
@@ -88,6 +83,24 @@ window.onload = function() {
             notes[i].stop();
         }
     });
+
+    // Prevent scrolling when touching the canvas
+    document.body.addEventListener("touchstart", function (e) {
+        if (e.target == canvas) {
+            e.preventDefault();
+        }
+    }, false);
+    document.body.addEventListener("touchend", function (e) {
+        if (e.target == canvas) {
+            e.preventDefault();
+        }
+    }, false);
+    document.body.addEventListener("touchmove", function (e) {
+        if (e.target == canvas) {
+            e.preventDefault();
+        }
+    }, false);
+
     window.addEventListener('resize', setCanvasSize, false);
 }
 function getMousePos(e) {
@@ -175,5 +188,4 @@ class Key {
     }
 
 }
-
 
