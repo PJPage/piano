@@ -1,27 +1,5 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-class Note {
-    constructor(value) {
-        this.osc = audioCtx.createOscillator();
-        this.osc.frequency.value = value;
-        this.osc.type = 'sine';
-        this.gainNode = audioCtx.createGain();
-        this.gainNode.connect(audioCtx.destination);
-        this.osc.connect(this.gainNode);
-    }
-
-    start(t = 0) {
-        this.gainNode.gain.value = 0.15;
-        this.osc.start(audioCtx.currentTime + t);
-    }
-    stop(t = 0) {
-        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, audioCtx.currentTime + t);
-        this.gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.03);
-        this.osc.stop(audioCtx.currentTime + t + 0.04);
-        delete this;
-    }
-}
-
 var NOTES = {
     C1: 32.70,
     Cs1: 34.65,
@@ -102,3 +80,26 @@ var NOTES = {
     E7: 2637.02, 
     F7: 2793.83 
 }
+
+class Note {
+    constructor(value) {
+        this.osc = audioCtx.createOscillator();
+        this.osc.frequency.value = value;
+        this.osc.type = 'sine';
+        this.gainNode = audioCtx.createGain();
+        this.gainNode.connect(audioCtx.destination);
+        this.osc.connect(this.gainNode);
+    }
+
+    start(t) {
+        this.gainNode.gain.value = 0.15;
+        this.osc.start(audioCtx.currentTime + t);
+    }
+    stop(t) {
+        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, audioCtx.currentTime + t);
+        this.gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.03);
+        this.osc.stop(audioCtx.currentTime + t + 0.04);
+        delete this;
+    }
+}
+

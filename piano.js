@@ -72,7 +72,7 @@ window.onload = function() {
             if (keys[i].contains(pos.x, pos.y)) {
                 n = new Note(keys[i].note);
                 notes.push(n);
-                n.start();
+                n.start(0);
                 played = true;
             }
             i--;
@@ -80,7 +80,7 @@ window.onload = function() {
     });
     canvas.addEventListener('mouseup', function(e) {
         for (var i = 0; i < notes.length; i++) {
-            notes[i].stop();
+            notes[i].stop(0);
         }
     });
 
