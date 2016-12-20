@@ -2,6 +2,18 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var gain = 0.30;
 
 var NOTES = {
+    C0: 16.35,
+    Cs0: 17.32,
+    D0: 18.35,
+    Ds0: 19.45,
+    E0: 20.60,
+    F0: 21.83,
+    Fs0: 23.12,
+    G0: 24.50,
+    Gs0: 25.96,
+    A0: 27.50,
+    As0: 29.14,
+    B0: 30.87,
     C1: 32.70,
     Cs1: 34.65,
     D1: 36.71,
@@ -79,9 +91,26 @@ var NOTES = {
     D7: 2349.32, 
     Ds7: 2489.02, 
     E7: 2637.02, 
-    F7: 2793.83 
+    F7: 2793.83, 
+    Fs7: 2959.96,
+    G7: 3135.96,
+    Gs7: 3322.44,
+    A7: 3520.00,
+    As7: 3729.31,
+    B7: 3951.07,
+    C8: 4186.01,
+    Cs8: 4434.92,
+    D8: 4698.63,
+    Ds8: 4978.03,
+    E8: 5274.04,
+    F8: 5587.65,
+    Fs8: 5919.91,
+    G8: 6271.93,
+    Gs8: 6644.88,
+    A8: 7040.00,
+    As8: 7458.62,
+    B8: 7902.13
 }
-
 class Note {
     constructor(value) {
         this.osc = audioCtx.createOscillator();
@@ -99,7 +128,7 @@ class Note {
     stop(t) {
         this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, audioCtx.currentTime + t);
         this.gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.5);
-        this.osc.stop(audioCtx.currentTime + t + 0.51);
+        this.osc.stop(audioCtx.currentTime + t + 0.5);
         delete this;
     }
 }

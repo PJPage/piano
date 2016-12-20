@@ -4,34 +4,28 @@ var ctx;
 var keyWidth;
 var keys = [];
 var notes = [];
-var naturals = [
-    NOTES.C3,
-    NOTES.D3,
-    NOTES.E3,
-    NOTES.F3,
-    NOTES.G3,
-    NOTES.A3,
-    NOTES.B3,
-    NOTES.C4,
-    NOTES.D4,
-    NOTES.E4,
-    NOTES.F4,
-    NOTES.G4,
-    NOTES.A4,
-    NOTES.B4
-];
-var sharps = [
-    NOTES.Cs3,
-    NOTES.Ds3,
-    NOTES.Fs3,
-    NOTES.Gs3,
-    NOTES.As3,
-    NOTES.Cs4,
-    NOTES.Ds4,
-    NOTES.Fs4,
-    NOTES.Gs4,
-    NOTES.As4
-];
+
+var naturals = [];
+var sharps = [];
+function generateNoteValues() {
+    var numKeys = 24;
+    var startNote = "C3"
+
+    var i = 0;
+    var started = false;
+    for (var n in NOTES) {
+        if ((n == startNote || started) && i < numKeys) {
+            started = true;
+            if (n.includes("s")) {
+                sharps.push(NOTES[n]);
+            } else {
+                naturals.push(NOTES[n]);
+            }
+            i++;
+        }
+    }
+}
+generateNoteValues();
 
 function setCanvasSize() {
     canvas.width = window.innerWidth;
@@ -48,7 +42,7 @@ window.onload = function() {
     ctx = canvas.getContext('2d');
     setCanvasSize();
     
-    canvas.addEventListener('touchstart', function(e) {
+    window.addEventListener('touchstart', function(e) {
         var pos = getMousePos(e);
         var touch = e.touches[e.touches.length - 1];
         var mouseEvent = new MouseEvent('mousedown', {
@@ -57,12 +51,12 @@ window.onload = function() {
         });
         canvas.dispatchEvent(mouseEvent);
     });
-    canvas.addEventListener('touchend', function(e) {
+    window.addEventListener('touchend', function(e) {
             var mouseEvent = new MouseEvent('mouseup', {});
             canvas.dispatchEvent(mouseEvent);
     });
 
-    canvas.addEventListener('mousedown', function(e) {
+    window.addEventListener('mousedown', function(e) {
 
         var pos = getMousePos(e);
 
@@ -78,7 +72,7 @@ window.onload = function() {
             i--;
         }
     });
-    canvas.addEventListener('mouseup', function(e) {
+    window.addEventListener('mouseup', function(e) {
         for (var i = 0; i < notes.length; i++) {
             notes[i].stop(0);
         }
@@ -129,27 +123,19 @@ function drawPiano() {
     ctx.stroke();
 
 
-    var i = 1;
-    var n = 0;
-    while (i < canvas.width / keyWidth) {
-        addBlackKey(i, n);
-        n++;
-        i++;
-        addBlackKey(i, n);
-        n++;
-        i += 2;
-        addBlackKey(i, n);
-        n++;
-        i++;
-        addBlackKey(i, n);
-        n++;
-        i++;
-        addBlackKey(i, n);
-        n++;
-        i += 2;
-    }
+    addBlackKeys();
+
     for (var i = 0; i < keys.length; i++) {
         keys[i].draw();
+    }
+}
+function addBlackKeys() {
+    var n = 0;
+    for (var i = 0; i < keys.length; i++) {
+        if (sharps[n] < keys[i].note) {
+            addBlackKey(i, n);
+            n++;
+        }
     }
 }
 
