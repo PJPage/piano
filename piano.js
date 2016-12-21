@@ -42,7 +42,8 @@ window.onload = function() {
     ctx = canvas.getContext('2d');
     setCanvasSize();
     
-    window.addEventListener('touchstart', function(e) {
+    //todo: figure out what's breaking events on touch, how touch works, handle sliding
+    canvas.addEventListener('touchstart', function(e) {
         var pos = getMousePos(e);
         var touch = e.touches[e.touches.length - 1];
         var mouseEvent = new MouseEvent('mousedown', {
@@ -51,12 +52,12 @@ window.onload = function() {
         });
         canvas.dispatchEvent(mouseEvent);
     });
-    window.addEventListener('touchend', function(e) {
+    canvas.addEventListener('touchend', function(e) {
             var mouseEvent = new MouseEvent('mouseup', {});
             canvas.dispatchEvent(mouseEvent);
     });
 
-    window.addEventListener('mousedown', function(e) {
+    canvas.addEventListener('mousedown', function(e) {
 
         var pos = getMousePos(e);
 
@@ -72,7 +73,7 @@ window.onload = function() {
             i--;
         }
     });
-    window.addEventListener('mouseup', function(e) {
+    canvas.addEventListener('mouseup', function(e) {
         for (var i = 0; i < notes.length; i++) {
             notes[i].stop(0);
         }
