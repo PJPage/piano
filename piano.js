@@ -67,22 +67,11 @@ window.onload = function() {
 
         var pos = getMousePos(e);
 
-        var i = keys.length - 1;
-        var played = false;
-        while (!played && i >= 0) {
-            if (keys[i].contains(pos.x, pos.y) && !keys[i].started) {
-                keys[i].start();
-                played = true;
-            }
-            i--;
-        }
-        /*
         for (var i = 0; i < keys.length; i++) {
             if (keys[i].contains(pos.x, pos.y) && !keys[i].started) {
                 keys[i].start();
             }
         }
-        */
     });
 
     canvas.addEventListener("mouseup", function(e) {
@@ -112,6 +101,7 @@ window.onload = function() {
                 keys[i].start();
             }
         }
+    });
 
     // Prevent scrolling when touching the canvas
     document.body.addEventListener("touchstart", function (e) {
@@ -131,10 +121,6 @@ window.onload = function() {
     }, false);
 
     window.addEventListener("resize", setCanvasSize, false);
-}
-
-function playKey(e) {
-
 }
 
 function getMousePos(e) {
@@ -238,4 +224,3 @@ class Key {
         this.started = false;
     }
 }
-
