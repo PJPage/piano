@@ -1,5 +1,4 @@
-var canvas;
-var ctx;
+var c, ctx;
 var onBlackKey = false;
 
 var keyWidth;
@@ -9,6 +8,8 @@ var notes = [];
 
 var naturals = [];
 var sharps = [];
+
+var mouseDown = false;
 
 function generateNoteValues() {
     var numKeys = 88;
@@ -32,38 +33,40 @@ function generateNoteValues() {
 generateNoteValues();
 
 function setCanvasSize() {
-    canvas.width = window.innerWidth;
+    c.width = window.innerWidth;
     if (window.innerHeight < window.innerWidth / 4) {
-        canvas.height = window.innerHeight;
+        c.height = window.innerHeight;
     } else {
-        canvas.height = window.innerWidth / 4;
+        c.height = window.innerWidth / 4;
     }
-    keyWidth = canvas.width / 14;
+    keyWidth = c.width / 14;
     drawPiano();
 }
 
 window.onload = function() {
-    canvas = document.getElementById("canvas");
-    ctx = canvas.getContext("2d");
+    c = document.getElementById("canvas");
+    ctx = c.getContext("2d");
     setCanvasSize();
     
     //todo: figure out what"s breaking events on touch, how touch works, handle sliding
-    canvas.addEventListener("touchstart", function(e) {
+    c.addEventListener("touchstart", function(e) {
         var pos = getMousePos(e);
         var touch = e.touches[e.touches.length - 1];
         var mouseEvent = new MouseEvent("mousedown", {
             clientX: touch.clientX,
             clientY: touch.clientY
         });
-        canvas.dispatchEvent(mouseEvent);
+        c.dispatchEvent(mouseEvent);
     });
 
-    canvas.addEventListener("touchend", function(e) {
+    c.addEventListener("touchend", function(e) {
             var mouseEvent = new MouseEvent("mouseup", {});
-            canvas.dispatchEvent(mouseEvent);
+            c.dispatchEvent(mouseEvent);
     });
 
-    canvas.addEventListener("mousedown", function(e) {
+    c.addEventListener("mousedown", function(e) {
+        mouseDown = true;
+        console.log("click");
 
         var pos = getMousePos(e);
 
@@ -74,7 +77,8 @@ window.onload = function() {
         }
     });
 
-    canvas.addEventListener("mouseup", function(e) {
+    c.addEventListener("mouseup", function(e) {
+        mouseDown = false;
         var pos = getMousePos(e);
         for (var i = 0; i < keys.length; i++) {
             if (keys[i].contains(pos.x, pos.y) && keys[i].started){
@@ -83,7 +87,8 @@ window.onload = function() {
         }
     });
 
-    canvas.addEventListener("mouseout", function(e) {
+    c.addEventListener("mouseout", function(e) {
+        mouseDown = false;
         for (var i = 0; i < keys.length; i++) {
             if (keys[i].started) {
                 keys[i].stop();
@@ -91,13 +96,13 @@ window.onload = function() {
         }
     });
 
-    canvas.addEventListener("mousemove", function(e) {
+    c.addEventListener("mousemove", function(e) {
         var pos = getMousePos(e);
         for (var i = 0; i < keys.length; i++) {
             if (!keys[i].contains(pos.x, pos.y) && keys[i].started) {
                 keys[i].stop();
             } 
-            else if (keys[i].contains(pos.x, pos.y) && !keys[i].started && e.which != 0) {
+            else if (keys[i].contains(pos.x, pos.y) && !keys[i].started && mouseDown) {
                 keys[i].start();
             }
         }
@@ -105,17 +110,17 @@ window.onload = function() {
 
     // Prevent scrolling when touching the canvas
     document.body.addEventListener("touchstart", function (e) {
-        if (e.target == canvas) {
+        if (e.target == c) {
             e.preventDefault();
         }
     }, false);
     document.body.addEventListener("touchend", function (e) {
-        if (e.target == canvas) {
+        if (e.target == c) {
             e.preventDefault();
         }
     }, false);
     document.body.addEventListener("touchmove", function (e) {
-        if (e.target == canvas) {
+        if (e.target == c) {
             e.preventDefault();
         }
     }, false);
@@ -124,7 +129,7 @@ window.onload = function() {
 }
 
 function getMousePos(e) {
-    var rect = canvas.getBoundingClientRect();
+    var rect = c.getBoundingClientRect();
     var x = e.clientX - rect.left;
     var y = e.clientY - rect.top;
     return {x: x, y: y};
@@ -134,19 +139,19 @@ function getMousePos(e) {
 function drawPiano() {
     keys = [];
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, c.width, c.height);
 
     ctx.strokeStyle = "gray";
 
-    for (var i = 0; i <= canvas.width / keyWidth; i++) {
-        keys.push(new Key(i * keyWidth, 0, keyWidth, canvas.height, "white", naturals[i]));
+    for (var i = 0; i <= c.width / keyWidth; i++) {
+        keys.push(new Key(i * keyWidth, 0, keyWidth, c.height, "white", naturals[i]));
     }
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(canvas.width, 0)
-    ctx.moveTo(0, canvas.height);
-    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(c.width, 0)
+    ctx.moveTo(0, c.height);
+    ctx.lineTo(c.width, c.height);
     ctx.stroke();
 
     addBlackKeys();
@@ -166,7 +171,7 @@ function addBlackKeys() {
 }
 
 function addBlackKey(pos, note) {
-    var k = new Key(pos * keyWidth - keyWidth / 4, 0, keyWidth / 2, canvas.height / 2, "black", sharps[note])
+    var k = new Key(pos * keyWidth - keyWidth / 4, 0, keyWidth / 2, c.height / 2, "black", sharps[note])
     keys.push(k);
     blackKeys.push(k);
 }
