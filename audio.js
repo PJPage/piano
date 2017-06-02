@@ -1,5 +1,10 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var gain = 0.30;
+var waveType = "sine";
+
+function changeWave(waveform) {
+    waveType = waveform;
+}
 
 var NOTES = {
     C0: 16.35, Cs0: 17.32,
@@ -58,10 +63,12 @@ var NOTES = {
     As8: 7458.62, B8: 7902.13
 }
 class Note {
-    constructor(value) {
+    constructor(value) {.30;
+
+
         this.osc = audioCtx.createOscillator();
         this.osc.frequency.value = value;
-        this.osc.type = "sine";
+        this.osc.type = waveType;
         this.gainNode = audioCtx.createGain();
         this.gainNode.connect(audioCtx.destination);
         this.osc.connect(this.gainNode);
