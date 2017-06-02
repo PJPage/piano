@@ -68,7 +68,6 @@ class Note {
     }
 
     start(t) {
-        console.log("start");
         this.gainNode.gain.value = gain;
         this.osc.start(audioCtx.currentTime + t);
     }

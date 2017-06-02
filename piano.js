@@ -11,6 +11,43 @@ var sharps = [];
 
 var mouseDown = false;
 
+// maps qwerty keyboard keycodes to keys[] indices
+var KEYMAP = {
+    90: 0,
+    88: 1,
+    67: 2,
+    86: 3,
+    66: 4,
+    78: 5,
+    77: 6,
+    188: 7,
+    190: 8,
+    191: 9,
+    81: 10,
+    87: 11,
+    69: 12,
+    82: 13,
+    84: 14,
+
+    83: 15,
+    68: 16,
+
+    71: 17,
+    72: 18,
+    74: 19,
+
+    76: 20,
+    186: 21,
+    
+    50: 22,
+    51: 23,
+    52: 24,
+
+
+
+
+}
+
 function generateNoteValues() {
     var numKeys = 88;
     var startNote = "C3"
@@ -47,6 +84,22 @@ window.onload = function() {
     c = document.getElementById("canvas");
     ctx = c.getContext("2d");
     setCanvasSize();
+
+    document.addEventListener("keydown", function(e) {
+        key = KEYMAP[e.which];
+
+        if (key != null && !keys[key].started) {
+            keys[key].start();
+        }
+    });
+
+    document.addEventListener("keyup", function(e) {
+        key = KEYMAP[e.which];
+
+        if (key != null && keys[key].started) {
+            keys[key].stop();
+        }
+    });
     
     //todo: figure out what"s breaking events on touch, how touch works, handle sliding
     c.addEventListener("touchstart", function(e) {
@@ -66,7 +119,6 @@ window.onload = function() {
 
     c.addEventListener("mousedown", function(e) {
         mouseDown = true;
-        console.log("click");
 
         var pos = getMousePos(e);
 
